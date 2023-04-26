@@ -21,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { _loginAuth } from "../../app/auth";
-import { socket } from "../../socket/socket";
 
 const Login = () => {
   const navigate = useNavigate();

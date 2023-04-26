@@ -25,9 +25,11 @@ const io = require("socket.io")(server, {
 
 let onlineUsers = new Map();
 io.on("connection", (socket) => {
+  // const uid = socket.handshake.auth.uid;
+
   socket.on("add-user", (userId) => {
-    console.log(`user connected with user id: ${userId}`);
     onlineUsers.set(userId, socket.id);
+    io.sockets.emit("users", userId);
   });
 
   socket.on("send-msg", (data) => {

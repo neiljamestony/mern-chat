@@ -3,8 +3,8 @@ import { Box } from "@chakra-ui/react";
 import "../../assets/css/UserComponent.css";
 import { _fetchUsers } from "../../app/auth";
 import { useQuery } from "react-query";
-import ChatUserComponent from "./ChatUserComponent";
 import { socket } from "../../socket/socket";
+import ChatUserComponent from "./ChatUserComponent";
 
 export default function UserComponent() {
   const sender = JSON.parse(localStorage.getItem("udata")) || [];

@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import {
   CardHeader,
   Flex,
@@ -6,16 +6,19 @@ import {
   Box,
   Heading,
   IconButton,
+  AvatarBadge,
 } from "@chakra-ui/react";
-import { SettingsIcon } from "@chakra-ui/icons";
+import { MoreHoriz } from "@mui/icons-material";
 import { updateRoom } from "../../app/redux/ChatSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllMsgs } from "../../app/auth";
 import { useQuery } from "react-query";
+import { socket } from "../../socket/socket";
 
-export default function ChatUserComponent({ name, data, profile }) {
+export default function ChatUserComponent({ name, data, profile, _id }) {
   const dispatch = useDispatch();
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [onlineUsers, sols] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
   const sender = JSON.parse(localStorage.getItem("udata")) || [];
 
   const msgsQry = useQuery(
@@ -26,6 +29,16 @@ export default function ChatUserComponent({ name, data, profile }) {
   const onChat = (formData) => {
     dispatch(updateRoom({ ...formData, messages: msgsQry.data || [] }));
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.connect();
+      socket.auth = { uid: sender._id };
+      socket.on("users", (response) => {
+        sols((prev) => [...prev, response]);
+      });
+    }
+  }, []);
 
   return (
     <CardHeader
@@ -40,7 +53,11 @@ export default function ChatUserComponent({ name, data, profile }) {
     >
       <Flex spacing="4">
         <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-          <Avatar src={profile} />
+          <Avatar src={profile}>
+            {onlineUsers.includes(_id) && (
+              <AvatarBadge boxSize="1.10em" bg="green.500" />
+            )}
+          </Avatar>
           <Box>
             <Heading textAlign="left" size="sm">
               {name === sender.name ? "Yourself" : name}
@@ -53,7 +70,8 @@ export default function ChatUserComponent({ name, data, profile }) {
             variant="ghost"
             colorScheme="gray"
             aria-label="See menu"
-            icon={<SettingsIcon />}
+            border="none"
+            icon={<MoreHoriz fontSize="medium" />}
             backgroundColor="#fff"
             boxShadow="1px 1px 1px 0.5px rgba(0, 0, 0, 0.1)"
           />

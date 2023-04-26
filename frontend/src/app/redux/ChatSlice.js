@@ -4,6 +4,7 @@ const initialState = {
   users: [],
   room: null,
   isUserTyping: { typing: false, sender: null },
+  onlineUsers: [],
 };
 
 const chatSlice = createSlice({
@@ -19,9 +20,13 @@ const chatSlice = createSlice({
     isTyping: (state, action) => {
       state.isUserTyping = action.payload;
     },
+    checkOnlineUsers: (state, action) => {
+      state.onlineUsers = action.payload;
+    },
   },
 });
 
-export const { updateUser, updateRoom, isTyping } = chatSlice.actions;
+export const { updateUser, updateRoom, isTyping, checkOnlineUsers } =
+  chatSlice.actions;
 
 export default chatSlice.reducer;

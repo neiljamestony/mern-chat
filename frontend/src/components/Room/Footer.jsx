@@ -47,7 +47,6 @@ export default function Footer() {
 
   useEffect(() => {
     socket.on("receive-typing", (response) => {
-      console.log("response", response);
       dispatch(isTyping(response));
     });
   }, []);
